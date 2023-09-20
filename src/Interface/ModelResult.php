@@ -4,13 +4,13 @@ namespace Pejman\Database\Interface;
 interface ModelResult {
 	function __construct( $class );
 
-	function find();
+	function find( $bind = [] );
 
-	function count();
+	function count( $bind = [] );
 
-	function findFirst();
+	function findFirst( $bind = [] );
 
-	function paginate();
+	function paginate( $limit, $page = 1);
 
 	function getPaginate();
 }
