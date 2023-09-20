@@ -1,0 +1,18 @@
+{
+    "name": "pejman/database",
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Pejman\\Database\\": "src/"
+        },
+        "files": ["src/Helper.php"]
+    },    
+    "authors": [
+        {
+            "name": "pejman",
+            "email": "pejman.hkh@gmail.com"
+        }
+    ],
+    "require": {}
+}
