@@ -4,19 +4,19 @@ namespace Pejman\Database\Interface;
 interface Model {
 	function __construct();
 
-	function __set();
+	function __set( $key, $value );
 
-	function __get();
+	function __get( $key );
 
-	function sql( $sql, $bind = [] );
+	public static function sql( $sql, $bind = [] );
 
 	function delete();
 
 	function save();
 
-	function find();
+	function find( $bind = [] );
 
-	function field();
+	function field( $fields );
 
-	function where();
+	function where( $a, $b = '', $c = '' );
 }
