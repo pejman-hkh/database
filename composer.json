@@ -4,7 +4,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Pejman\\Database\\": "src/"
+            "Pejman\\Database\\": "src/",
+            "App\\": "app/"
         },
         "files": ["src/Helper.php"]
     },    
