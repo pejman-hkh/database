@@ -47,8 +47,7 @@ class Model {
 
 	public static function newModel() {
 		$class = get_called_class();
-		$factory = new \Pejman\Database\FactoryModel;
-		return $factory->init( $class );		
+		return \Pejman\Database\FactoryModel::init( $class );		
 	}
 
 	public static function sql( $sql, $bind = [] ) {
