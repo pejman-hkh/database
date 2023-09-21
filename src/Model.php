@@ -50,15 +50,8 @@ class Model {
 
 	public static function newModel() {
 		$class = get_called_class();
-
-		if( $_ENV['driver'] == 'PDO' ) {
-			if( $_ENV['db'] == 'mysql' ) {
-				return new \Pejman\Database\Pdo\Mysql\Model( $class );
-			}
-		}
-
-		//default model from pdo mysql
-		return new \Pejman\Database\Pdo\Mysql\Model( $class );
+		$factory = new \Pejman\Database\FactoryModel;
+		return $factory->init( $class );		
 	}
 
 	public static $models = [];
