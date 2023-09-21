@@ -5,9 +5,8 @@ class Wrapper implements \Pejman\Database\Interface\Wrapper {
 
 	private $db;
 	public static $database;
-	function __construct( $env ) {
-		$factory = new \Pejman\Database\Factory;						
-		$this->db = $factory->init();
+	function __construct() {					
+		$this->db = \Pejman\Database\Factory::init();
 		self::$database = $this->db;
 	}
 
@@ -30,6 +29,9 @@ class Wrapper implements \Pejman\Database\Interface\Wrapper {
 		return $this->db->lastInsertId();
 	}
 
+	function getConnection() {
+		return $this->db->getConnection();
+	}
 	function __destruct() {
 		return $this->db->__destruct();
 	}
