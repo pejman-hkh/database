@@ -1,11 +1,11 @@
 <?php
 namespace Pejman\Database;
 class Query {
-	public static function getUpdateQuery( $table, $columns ) {
+	public static function makeUpdateQuery( $table, $columns ) {
 		return "UPDATE `".$table."` SET ".'`'.implode('` = ?, `', $columns ).'` = ? '." WHERE id = ? ";
 	}
 
-	public static function getInsertQuery( $table, $columns ) {
+	public static function makeInsertQuery( $table, $columns ) {
 		return "INSERT INTO `".$this->table."`(".'`'.implode("` , `", @$this->columns ).'`'.") VALUES(".( str_repeat('?,', count( @$this->columns ) - 1 ).'?' ).")";
 	}
 
@@ -21,5 +21,16 @@ class Query {
 		}
 
 		return [ $sql, $bind ];		
+	}
+
+	public static function makeSelectQuery( $sql, $table, $fields = '*') {
+		if( substr( trim( $sql ), 0, 5 ) != 'select' ) {
+			$sql = "select $fields from ".$table." ".($sql?:"");
+		}
+		return $sql;
+	}
+
+	public static function makeDeleteQuery( $table ) {
+		return "DELETE FROM ".$table." where id = ? ";
 	}
 }
