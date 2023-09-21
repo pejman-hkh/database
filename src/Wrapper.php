@@ -5,18 +5,10 @@ class Wrapper implements \Pejman\Database\Interface\Wrapper {
 
 	private $db;
 	public static $database;
-	function __construct() {
-		if( $_ENV['driver'] == 'PDO' ) {
-			if( $_ENV['db'] == 'mysql' ) {
-				$this->db = new \Pejman\Database\Pdo\Mysql\Wrapper();
-				self::$database = $this->db;
-				return;
-			}
-		}
-
-		//default wrapper from pdo mysql
-		$this->db = new \Pejman\Database\Pdo\Mysql\Wrapper();
-		self::$database = $this->db;						
+	function __construct( $env ) {
+		$factory = new \Pejman\Database\Factory;						
+		$this->db = $factory->init();
+		self::$database = $this->db;
 	}
 
 	public static $dbName;
