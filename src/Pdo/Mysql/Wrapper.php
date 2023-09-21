@@ -57,8 +57,12 @@ class Wrapper implements \Pejman\Database\Interface\Wrapper {
 		return $res;		
 	}
 
+	function lastInsertId() {
+		return $this->connection->lastInsertId();
+	}
+
 	public function __destruct() {
-		$this->db = null;
-		unset( $this->db );
+		$this->connection = null;
+		unset( $this->connection );
 	}	
 }
