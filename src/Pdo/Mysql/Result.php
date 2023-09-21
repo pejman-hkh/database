@@ -8,11 +8,11 @@ class Result implements \Pejman\Database\Interface\Result {
 	}
 
 	function next() {
-		return $this->statment->fetch( \PDO::FETCH_ASSOC  );
+		return $this->statment->fetch( \PDO::FETCH_OBJ );
 	}
 
 	function find() {
-		return $this->statment->fetchAll( \PDO::FETCH_ASSOC );
+		return $this->statment->fetchAll( \PDO::FETCH_OBJ );
 	}
 	
 	function count() {
