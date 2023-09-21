@@ -14,9 +14,9 @@ interface Model {
 
 	function save();
 
-	function find( $bind = [] );
+	public static function find( $bind = [] );
 
-	function field( $fields );
+	public static function field( $fields );
 
-	function where( $a, $b = '', $c = '' );
+	public static function where( $a, $b = '', $c = '' );
 }
