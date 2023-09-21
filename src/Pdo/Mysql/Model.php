@@ -11,29 +11,25 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 	}
 
 	function makeQuery( $sql, $fields = '*' ) {
-		$this->sql = $sql;
-		if( substr( trim( $sql ), 0, 5 ) != 'select' ) {
-			$this->sql = "select $fields from ".$this->table." ".($sql?:"");
-		}
+		$this->sql = \Pejman\Database\Query::makeSelectQuery( $sql, $this->table, $fields );
 	}
 
 	function sql( $sql, $bind = [] ) {
 		$this->makeQuery( $sql );
-
 		return $this;	
 	}
 
 	function delete() {
-		return $this->db->query( "DELETE FROM ".$this->table." where id = ? ", [ $this->id ] );
+		return $this->db->query( \Pejman\Database\Query::makeDeleteQuery( $table ), [ $this->id ] );
 	}
+
+	public $columns = [];
+	public $columnsType = [];
 
 	public function getColumns( $cache = true ) {
 		$columns = new Columns;
 		list( $this->columns, $this->columnsType ) = $columns->init();
 	}
-
-	public $columns = [];
-	public $columnsType = [];
 
 	function save() {
 		$this->getColumns();
@@ -42,7 +38,7 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 		if( $this->recordExists )
 			$vals[] = $this->id;
 
-		$this->db->query( @$this->recordExists ? \Pejman\Database\Query::getUpdateQuery( $this->table, $this->columns ) : \Pejman\Database\Query::getInsertQuery( $this->table, $this->columns ), $vals );
+		$this->db->query( @$this->recordExists ? \Pejman\Database\Query::makeUpdateQuery( $this->table, $this->columns ) : \Pejman\Database\Query::makeInsertQuery( $this->table, $this->columns ), $vals );
 
 		if( ! $this->recordExists )
 			$this->id = $this->db->lastInsertId();
@@ -68,21 +64,19 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 	private $bind = [];
 
 	function find( $bind = [] ) {
-		$class = $this->class;
 
-		if( count( $this->bind ) > 0 ) {
+		if( count( $this->bind ) > 0 ) 
 			$bind = array_merge( $bind, $this->bind );
-		}
+		
 
 		$query = $this->db->query( $this->sql, $bind );
 
-		if( @$this->paginateData ) {
+		if( @$this->paginateData )
 			$this->count = $this->countSql( $bind );
-		}
 
 		$ret = [];
 		while( $v = $query->next() ) {	
-			$o = new $class();
+			$o = new $this->class();
 			$o->recordExists = true;
 			$o->setData( $v );
 	
