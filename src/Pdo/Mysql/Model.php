@@ -68,14 +68,13 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 		if( count( $this->bind ) > 0 ) 
 			$bind = array_merge( $bind, $this->bind );
 		
-
 		$query = $this->db->query( $this->sql, $bind );
 
 		if( @$this->paginateData )
 			$this->count = $this->countSql( $bind );
 
 		$ret = [];
-		while( $v = $query->next() ) {	
+		while( $v = $query->next() ) {
 			$o = new $this->class();
 			$o->recordExists = true;
 			$o->setData( $v );
@@ -90,7 +89,7 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 	}
 
 	function findFirst( $bind = [] ) {
-		return $this->find( $bind )[0];
+		return $this->find( $bind )->index(0);
 	}
 
 	function field( $fields ) {
