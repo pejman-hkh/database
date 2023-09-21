@@ -9,13 +9,11 @@ class Model {
 
 	public function __set($name,$value) {
 		$a = 'set'.$name;
-		if( method_exists($this, $a ) ) {
+		if( method_exists($this, $a ) )
 			return $this->$a( $name, $value );
-		}
 
-		if( @$this->data->$name ) {
+		if( @$this->data->$name )
 			$this->data->$name = $value; 
-		}
 
 		$this->$name = $value;
 	}
@@ -23,18 +21,17 @@ class Model {
 	private $cacheGetter;
 	public function __get($name) {
 		$a = 'get'.$name;
-		if( @$this->cacheGetter[$a] ) {
+		if( @$this->cacheGetter[$a] )
 			return $this->cacheGetter[$a];
-		}
 
 		if( method_exists($this, $a ) ) {
 			$this->cacheGetter[$a] = $ret = $this->$a();
 			return $ret;
 		}
 
-		if( @$this->data->$name ) {
+		if( @$this->data->$name )
 			return $this->data->$name;
-		}
+	
 
 		return @$this->$name;
 	}
@@ -54,17 +51,8 @@ class Model {
 		return $factory->init( $class );		
 	}
 
-	public static $models = [];
-	public static function modelInstance() {
-		$class = get_called_class();
-		if( ! @self::$models[ $class ] )
-			self::$models[ $class ] = self::newModel();
-
-		return self::$models[ $class ];
-	}
-
 	public static function sql( $sql, $bind = [] ) {
-		return self::modelInstance()->sql( $sql, $bind );
+		return self::newModel()->sql( $sql, $bind );
 	}
 
 	function delete() {
@@ -76,18 +64,18 @@ class Model {
 	}
 
 	public static function find( $bind = [] ) {
-		return self::modelInstance()->find( $bind );
+		return self::newModel()->find( $bind );
 	}
 
 	public static function field( $fields ) {
-		return self::modelInstance()->field( $bind );
+		return self::newModel()->field( $bind );
 	}
 
 	public static function where( $a, $b = '', $c = '' ) {
-		return self::modelInstance()->where( $bind );
+		return self::newModel()->where( $bind );
 	}
 
 	public static function getPaginate() {
-		return self::modelInstance()->getPaginate();
+		return self::newModel()->getPaginate();
 	}
 }
