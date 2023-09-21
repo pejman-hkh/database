@@ -2,7 +2,7 @@
 namespace Pejman\Database;
 class FactoryModel {
 
-	function init( $class ) {
+	public static function init( $class ) {
 		if( $_ENV['driver'] == 'PDO' ) {
 			if( $_ENV['db'] == 'mysql' ) {
 				return new \Pejman\Database\Pdo\Mysql\Model( $class );
