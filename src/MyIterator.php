@@ -6,6 +6,14 @@ class MyIterator implements \Iterator {
         $this->array = $array;
     }
 
+    public function array() {
+        return $this->array;
+    }
+
+    function index( $index ) {
+        return $this->array[ $index ];
+    }
+
     public function __construct() {
         $this->position = 0;
     }
