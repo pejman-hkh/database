@@ -83,7 +83,10 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 			$ret[] = $o;
 		}
 
-		return $ret;	
+		$iter = new \Pejman\Database\MyIterator();
+		$iter->append( $ret );
+		$iter->pagination = $this->getPaginate();
+		return $iter;	
 	}
 
 	function findFirst( $bind = [] ) {
