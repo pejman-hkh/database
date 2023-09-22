@@ -1,64 +1,52 @@
 <?php
 namespace Pejman\Database\Pdo\Mysql;
-class Model implements \Pejman\Database\Interface\ModelResult {
-	use \Pejman\Database\Traits\Model;
+class ModelResult implements \Pejman\Database\Interface\ModelResult {
+	
 	use \Pejman\Database\Traits\Pagination;
 
 	function __construct( $class ) {
 		$this->db = \Pejman\Database\Wrapper::$database;
 		$this->class = $class;
 		$this->table = $this->class::$table;
+		$this->data = new \StdClass;
 	}
 
 	function makeQuery( $sql, $fields = '*' ) {
 		$this->sql = \Pejman\Database\Query::makeSelectQuery( $sql, $this->table, $fields );
+		return $this;
 	}
 
 	function sql( $sql, $bind = [] ) {
-		$this->makeQuery( $sql );
-		return $this;	
+		return $this->makeQuery( $sql );
 	}
 
-	function delete() {
-		return $this->db->query( \Pejman\Database\Query::makeDeleteQuery( $table ), [ $this->id ] );
+	function delete( &$model ) {
+		return $this->db->query( \Pejman\Database\Query::makeDeleteQuery( $this->table ), [ $model->id ] );
 	}
 
 	public $columns = [];
 	public $columnsType = [];
+	public $data;
 
 	public function getColumns( $cache = true ) {
-		$columns = new Columns;
-		list( $this->columns, $this->columnsType ) = $columns->init();
+		list( $this->columns, $this->columnsType ) = Columns::init( $this->db, $this->table );
+		return $this->columns;
 	}
 
-	function save() {
+	function save( &$model ) {
 		$this->getColumns();
-		$vals = Pejman\Database\Bind::make( $this->columns, $this->data );
 
-		if( $this->recordExists )
-			$vals[] = $this->id;
+		$this->db->query( @$model->recordExists ? \Pejman\Database\Query::makeUpdateQuery( $this->table, $this->columns ) : \Pejman\Database\Query::makeInsertQuery( $this->table, $this->columns ), \Pejman\Database\Bind::make( $this->columns, $model ) );
 
-		$this->db->query( @$this->recordExists ? \Pejman\Database\Query::makeUpdateQuery( $this->table, $this->columns ) : \Pejman\Database\Query::makeInsertQuery( $this->table, $this->columns ), $vals );
-
-		if( ! $this->recordExists )
-			$this->id = $this->db->lastInsertId();
+		if( ! $model->recordExists )
+			$model->id = $this->db->lastInsertId();
 		
-		$this->recordExists = 1;
-		return $this->id;
-	}
-
-	function makeCountQuery() {
-		return \Pejman\Database\CountSql::make( $this->sql );
+		$model->recordExists = 1;
+		return $model->id;
 	}
 
 	function count( $bind = [] ) {
-		return $this->countSql( $bind );
-	}
-
-	function countSql( $bind = [] ) {
-		$fetch = $this->db->query( $this->makeCountQuery(), $bind )->find()[0];
-
-		return $fetch->count;	
+		return $fetch = $this->db->query( \Pejman\Database\CountSql::make( $this->sql ), $bind )->find()[0]->count;
 	}
 
 	private $bind = [];
@@ -71,11 +59,11 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 		$query = $this->db->query( $this->sql, $bind );
 
 		if( @$this->paginateData )
-			$this->count = $this->countSql( $bind );
+			$this->count = $this->count( $bind );
 
 		$ret = [];
 		while( $v = $query->next() ) {
-			$o = new $this->class();
+			$o = new $this->class( $this->class );
 			$o->recordExists = true;
 			$o->setData( $v );
 	
@@ -93,15 +81,13 @@ class Model implements \Pejman\Database\Interface\ModelResult {
 	}
 
 	function field( $fields ) {
-		$this->makeQuery( " ", $fields );
-		return $this;
+		return $this->makeQuery( " ", $fields );
 	}
 
 	function where( $a, $b = '', $c = '' ) {
 		list( $sql, $bind ) = \Pejman\Database\Query::makeWhereQuery($a,$b,$c);
 		$this->bind = array_merge( $bind, $this->bind );
-		$this->makeQuery( $sql );
-		return $this;
+		return $this->makeQuery( $sql );
 	}
 
 }
