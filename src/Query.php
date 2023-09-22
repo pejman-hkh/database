@@ -6,7 +6,7 @@ class Query {
 	}
 
 	public static function makeInsertQuery( $table, $columns ) {
-		return "INSERT INTO `".$this->table."`(".'`'.implode("` , `", @$this->columns ).'`'.") VALUES(".( str_repeat('?,', count( @$this->columns ) - 1 ).'?' ).")";
+		return "INSERT INTO `".$table."`(".'`'.implode("` , `", @$columns ).'`'.") VALUES(".( str_repeat('?,', count( @$columns ) - 1 ).'?' ).")";
 	}
 
 	public static function makeWhereQuery( $a, $b, $c ) {
