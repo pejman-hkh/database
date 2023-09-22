@@ -8,7 +8,6 @@ class ModelResult implements \Pejman\Database\Interface\ModelResult {
 		$this->db = \Pejman\Database\Wrapper::$database;
 		$this->class = $class;
 		$this->table = $this->class::$table;
-		$this->data = new \StdClass;
 	}
 
 	function makeQuery( $sql, $fields = '*' ) {
@@ -24,19 +23,10 @@ class ModelResult implements \Pejman\Database\Interface\ModelResult {
 		return $this->db->query( \Pejman\Database\Query::makeDeleteQuery( $this->table ), [ $model->id ] );
 	}
 
-	public $columns = [];
-	public $columnsType = [];
-	public $data;
-
-	public function getColumns( $cache = true ) {
-		list( $this->columns, $this->columnsType ) = Columns::init( $this->db, $this->table );
-		return $this->columns;
-	}
-
 	function save( &$model ) {
-		$this->getColumns();
+		list( $columns, $columnsType ) = Columns::init( $this->db, $this->table );
 
-		$this->db->query( @$model->recordExists ? \Pejman\Database\Query::makeUpdateQuery( $this->table, $this->columns ) : \Pejman\Database\Query::makeInsertQuery( $this->table, $this->columns ), \Pejman\Database\Bind::make( $this->columns, $model ) );
+		$this->db->query( @$model->recordExists ? \Pejman\Database\Query::makeUpdateQuery( $this->table, $columns ) : \Pejman\Database\Query::makeInsertQuery( $this->table, $columns ), \Pejman\Database\Bind::make( $columns, $model ) );
 
 		if( ! $model->recordExists )
 			$model->id = $this->db->lastInsertId();
@@ -46,7 +36,7 @@ class ModelResult implements \Pejman\Database\Interface\ModelResult {
 	}
 
 	function count( $bind = [] ) {
-		return $fetch = $this->db->query( \Pejman\Database\CountSql::make( $this->sql ), $bind )->find()[0]->count;
+		return $this->db->query( \Pejman\Database\CountSql::make( $this->sql ), $bind )->find()[0]->count;
 	}
 
 	private $bind = [];
