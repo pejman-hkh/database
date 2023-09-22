@@ -1,3 +1,4 @@
+/app              export-ignore
 /tests              export-ignore
 /examples       export-ignore
 test.sh       export-ignore
