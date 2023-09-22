@@ -1,24 +1,27 @@
 <?php
 namespace Pejman\Database;
 class Bind {
-	public static function make( $columns, $data ) {
+	public static function make( $columns, $model ) {
 		$vals = [];
 		foreach( $columns as $v ) {
-			$type = gettype( $this->$v );
-			if( is_array( $this->$v ) ) {
-				$data->$v = implode(",", $data->$v);
+			$type = gettype( $model->$v );
+			if( is_array( $model->$v ) ) {
+				$model->$v = implode(",", $model->$v);
 			}
 			
 			if( $type == "integer" ) {
-				$vals[] = (int)$data->$v;
+				$vals[] = (int)$model->$v;
 			} else if( $type == "string" ) {
-				$vals[] = (string)$data->$v;
+				$vals[] = (string)$model->$v;
 			} else if( $type == "double" ) {
-				$vals[] = (double)$data->$v;			
+				$vals[] = (double)$model->$v;			
 			} else {
-				$vals[] = (string)$data->$v;
+				$vals[] = (string)$model->$v;
 			}
 		}
+		
+		if( $model->recordExists )
+			$vals[] = $model->id;
 		
 		return $vals;	
 	}	
