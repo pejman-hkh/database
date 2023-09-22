@@ -25,7 +25,6 @@ final class modelTest extends TestCase
     public function testGetter() {
        $test = \App\Model\Test::sql("where id = ? ")->findFirst([1]);
        $this->assertSame('getter 1',$test->testGetter);
-       $this->assertSame('test 1',$test->test);
     }
 
     public function testFindIter() {
@@ -36,6 +35,64 @@ final class modelTest extends TestCase
        }
 
        $this->assertSame(1,$test->id);
+    }
+
+    public function testDelete() {
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+
+        if( $test2->id )
+            $test2->delete();
+
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+        $this->assertSame(null,$test2->id);
+    }
+
+    public function testSave() {
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+
+        if( ! @$test2->id ){
+
+            $test2 = new \App\Model\Test;
+            $test2->id = 2;
+            $test2->test = "insert save test";
+            $test2->save();
+        }
+
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+        $this->assertSame("insert save test",$test2->data->test);
+
+    }
+
+    public function testUpdateOnSave() {
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+
+        if( @$test2->id ){
+            $test2->test = "update save test";
+            $test2->save();
+        }
+
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+        $this->assertSame("update save test",$test2->data->test);
+
+    }
+
+    public function testMulitSelect() {
+        $test1 = \App\Model\Test::sql("where id = 1")->findFirst();
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+        if( $test2->id ){
+            $test2->test = "test2 on update";
+            $test2->save();
+        }        
+
+        if( $test1->id ){
+            $test1->test = "test1 on update";
+            $test1->save();
+        }
+
+        $test1 = \App\Model\Test::sql("where id = 1")->findFirst();
+        $test2 = \App\Model\Test::sql("where id = 2")->findFirst();
+        $this->assertSame("test1 on update",$test1->data->test);     
+        $this->assertSame("test2 on update",$test2->data->test);  
     }
 
 }
