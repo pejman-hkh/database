@@ -8,22 +8,23 @@ class Model {
 	}
 
 	private $data;
-	public function __set($name,$value) {
-		$a = 'set'.$name;
-		if( method_exists($this, $a ) )
-			return $this->$a( $name, $value );
+	public function __set( $name, $value ) {
+		$setMethod = 'set'.$name;
+
+		if( method_exists($this, $setMethod ) )
+			return $this->$setMethod( $name, $value );
 
 		$this->$name = $value;
 	}
 
 	private $cacheGetter;
-	public function __get($name) {
-		$a = 'get'.$name;
-		if( @$this->cacheGetter[$a] )
-			return $this->cacheGetter[$a];
+	public function __get( $name ) {
+		$getMethod = 'get'.$name;
+		if( @$this->cacheGetter[ $getMethod ] )
+			return $this->cacheGetter[ $getMethod ];
 
-		if( method_exists($this, $a ) ) {
-			$this->cacheGetter[$a] = $ret = $this->$a();
+		if( method_exists($this, $getMethod ) ) {
+			$this->cacheGetter[ $getMethod ] = $ret = $this->$getMethod();
 			return $ret;
 		}
 
@@ -43,8 +44,7 @@ class Model {
 	}
 
 	public static function newModelResult() {
-		$class = get_called_class();
-		return \Pejman\Database\FactoryModelResult::init( $class );		
+		return \Pejman\Database\FactoryModelResult::init( get_called_class() );		
 	}
 
 	public static function sql( $sql, $bind = [] ) {
