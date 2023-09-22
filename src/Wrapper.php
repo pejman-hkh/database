@@ -6,7 +6,7 @@ class Wrapper implements \Pejman\Database\Interface\Wrapper {
 	private $db;
 	public static $database;
 	function __construct() {					
-		$this->db = \Pejman\Database\Factory::init();
+		$this->db = \Pejman\Database\Factory::wrapper();
 		self::$database = $this->db;
 	}
 
