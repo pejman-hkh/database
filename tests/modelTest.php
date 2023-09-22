@@ -95,4 +95,9 @@ final class modelTest extends TestCase
         $this->assertSame("test2 on update",$test2->data->test);  
     }
 
+    public function testPagination() {
+        $tests = \App\Model\Test::sql("where 1")->paginate(5,1)->find();
+        $this->assertSame(5, $tests->pagination->end );
+    }
+
 }
