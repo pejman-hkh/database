@@ -2,9 +2,10 @@
 namespace Pejman\Database;
 class CountSql {
 	public static function make( $sql ) {
-
 		$sql = substr($sql, strpos( $sql, 'from') );
-		$sql = substr($sql, 0, strpos( $sql, 'limit') );
+
+		if( $lp = strpos( $sql, 'limit') )
+			$sql = substr($sql, 0, $lp );
 
 		$sql = preg_replace_callback('#order\s*by(.*?)(asc|desc)#isU', function( $m ) {
 			return '';
