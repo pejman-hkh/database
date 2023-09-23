@@ -9,12 +9,12 @@ I'm working on this project for writing standard php database
 ```php
 $db = new \Pejman\Database\Wrapper();
 $config = require(__dir__.'/../config.php');
-$db->connect( $this->config );
+$db->connect( $config );
 ```
 
 # Query on Database With Query Method
 ```php
-$last = $this->db->query("select * from test order by id desc")->find()[0];
+$last = $db->query("select * from test order by id desc")->find()[0];
 ```
 
 # Model Defination
