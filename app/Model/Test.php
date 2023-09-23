@@ -11,4 +11,8 @@ class Test extends \Pejman\Database\Model {
 		//if you want change some field you should use ->data inside it because you changed it with getter
 		return $this->data->test.' '.$this->id;
 	}
+
+	function getTest1() {
+		return Test1::sql("where testid = ?")->findFirst([ $this->id ]);
+	}
 }
