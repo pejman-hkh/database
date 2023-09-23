@@ -100,4 +100,17 @@ final class modelTest extends TestCase
         $this->assertSame(5, $tests->pagination->end );
     }
 
+    public function testTest1() {
+        $count = \App\Model\Test1::sql("")->count();
+        if( $count == 0 ) {   
+            $test1 = new \App\Model\Test1();
+            $test1->title = 'test';
+            $test1->testid = 1;
+            $test1->save();
+        }
+
+        $test1 = \App\Model\Test1::sql("where id = 1")->findFirst();
+        $this->assertSame(1, $test1->test->id );
+    }
+
 }
