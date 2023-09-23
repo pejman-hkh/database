@@ -24,7 +24,8 @@ class Query {
 	}
 
 	public static function makeSelectQuery( $sql, $table, $fields = '*') {
-		if( substr( trim( $sql ), 0, 5 ) != 'select' ) {
+	
+		if( substr( trim( $sql ), 0, 6 ) != 'select' ) {
 			$sql = "select $fields from ".$table." ".($sql?:"");
 		}
 		return $sql;
